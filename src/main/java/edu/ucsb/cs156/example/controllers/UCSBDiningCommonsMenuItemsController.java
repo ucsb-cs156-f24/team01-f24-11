@@ -74,6 +74,32 @@ public class UCSBDiningCommonsMenuItemsController extends ApiController {
     }
 
     /**
+     * Update a single UCSBDiningCommonsMenuItem via diningCommonsCode
+     * 
+     * @param id the id of the UCSBDiningCommonsMenuItem
+     * @param ucsbDiningCommonsMenuItem the new UCSBDiningCommonsMenuItem
+     * @return a single UCSBDiningCommonsMenuItem
+     */
+    @Operation(summary= "Update a single ucsb dining commons menu item")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("")
+    public UCSBDiningCommonsMenuItem updateUCSBDiningCommonsMenuItem(
+            @Parameter(name="id") @RequestParam Long id,
+            @Valid @RequestBody UCSBDiningCommonsMenuItem ucsbDiningCommonsMenuItem) {
+
+        UCSBDiningCommonsMenuItem ucsbDiningCommonsMenuItemToUpdate = ucsbDiningCommonsMenuItemRepository
+                .findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(UCSBDiningCommonsMenuItem.class, id));
+
+        ucsbDiningCommonsMenuItemToUpdate.setDiningCommonsCode(ucsbDiningCommonsMenuItem.getDiningCommonsCode());
+        ucsbDiningCommonsMenuItemToUpdate.setName(ucsbDiningCommonsMenuItem.getName());
+        ucsbDiningCommonsMenuItemToUpdate.setStation(ucsbDiningCommonsMenuItem.getStation());
+        ucsbDiningCommonsMenuItemRepository.save(ucsbDiningCommonsMenuItemToUpdate);
+        return ucsbDiningCommonsMenuItemToUpdate;
+    }
+
+
+    /**
      * Create a new UCSBDiningCommonsMenuItem
      * 
      * @param diningCommonsCode code of the UCSBDiningCommons

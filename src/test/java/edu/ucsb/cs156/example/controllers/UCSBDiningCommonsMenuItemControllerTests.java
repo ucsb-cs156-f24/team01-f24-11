@@ -142,4 +142,49 @@ public class UCSBDiningCommonsMenuItemControllerTests extends ControllerTestCase
 
         }
 
+        @WithMockUser(roles = { "ADMIN", "USER" })
+        @Test
+        public void testPutHappyPath() throws Exception {
+                UCSBDiningCommonsMenuItem mockItem = new UCSBDiningCommonsMenuItem();
+                mockItem.setId(63L);
+                mockItem.setDiningCommonsCode("foo");
+                mockItem.setName("bar");
+                mockItem.setStation("baz");
+
+                UCSBDiningCommonsMenuItem oldMockItem = new UCSBDiningCommonsMenuItem();
+                oldMockItem.setId(63L);
+                oldMockItem.setDiningCommonsCode("old_foo");
+                oldMockItem.setName("old_bar");
+                oldMockItem.setStation("old_baz");
+
+                when(ucsbDiningCommonsMenuItemRepository.findById(63L)).thenReturn(Optional.of(oldMockItem));
+                when(ucsbDiningCommonsMenuItemRepository.save(mockItem)).thenReturn(mockItem);
+                String body = "{\"id\":63,\"diningCommonsCode\":\"foo\",\"name\":\"bar\",\"station\":\"baz\"}";
+                MvcResult response = mockMvc.perform(put("/api/ucsbdiningcommonsmenuitems?id=63")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .characterEncoding("utf-8")
+                                .content(body)
+                                .with(csrf())).andExpect(status().isOk()).andReturn();
+                verify(ucsbDiningCommonsMenuItemRepository, times(1)).save(mockItem);
+                String responseString = response.getResponse().getContentAsString();
+                assertEquals(body, responseString);
+        }
+
+        @WithMockUser(roles = { "ADMIN", "USER" })
+        @Test
+        public void testPutNotFound() throws Exception {
+                UCSBDiningCommonsMenuItem mockItem = new UCSBDiningCommonsMenuItem();
+                mockItem.setId(63L);
+                mockItem.setDiningCommonsCode("foo");
+                mockItem.setName("bar");
+                mockItem.setStation("baz");
+                when(ucsbDiningCommonsMenuItemRepository.findById(63L)).thenReturn(Optional.empty());
+                String body = "{\"id\":63,\"diningCommonsCode\":\"foo\",\"name\":\"bar\",\"station\":\"baz\"}";
+                mockMvc.perform(put("/api/ucsbdiningcommonsmenuitems?id=63")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .characterEncoding("utf-8")
+                                .content(body)
+                                .with(csrf())).andExpect(status().isNotFound()).andReturn();
+                verify(ucsbDiningCommonsMenuItemRepository, times(0)).save(mockItem);
+        }
 }
