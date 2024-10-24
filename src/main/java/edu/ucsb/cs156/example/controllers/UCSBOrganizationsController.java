@@ -31,13 +31,31 @@ public class UCSBOrganizationsController extends ApiController {
     @Autowired
     UCSBOrganizationsRepository ucsbOrganizationsRepository;
 
+    /**
+     * List all UCSB Orgs
+     *
+     * @return an iterable of UCSBOrganizations
+     */
     @Operation(summary = "List all ucsb organizations")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/all")
-
     public Iterable<UCSBOrganizations> allOrganizations() {
         Iterable<UCSBOrganizations> organizations = ucsbOrganizationsRepository.findAll();
         return organizations;
+    }
+
+    /**
+     * Get a single org by id
+     *
+     * @param org the id of the date
+     * @return a UCSBOrg
+     */
+    @Operation(summary = "Get a single org from the table")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("")
+    public UCSBOrganizations getById(@RequestParam String orgCode) {
+        return ucsbOrganizationsRepository.findById(orgCode)
+                .orElseThrow(() -> new EntityNotFoundException(UCSBOrganizations.class, orgCode));
     }
 
     @Operation(summary = "Create a new organization")

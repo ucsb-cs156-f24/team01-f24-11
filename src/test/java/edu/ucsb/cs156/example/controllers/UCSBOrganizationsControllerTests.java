@@ -25,6 +25,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -164,5 +165,50 @@ public class UCSBOrganizationsControllerTests extends ControllerTestCase {
                 String expectedJson = mapper.writeValueAsString(expectedOrganizations);
                 String responseString = response.getResponse().getContentAsString();
                 assertEquals(expectedJson, responseString);
+        }
+
+        @WithMockUser(roles = { "USER" })
+        @Test
+        public void logged_in_user_can_get_organization_by_id_when_it_exists() throws Exception {
+                // Arrange
+                String orgCode = "TEST_ORG";
+                UCSBOrganizations org = UCSBOrganizations.builder()
+                                .orgCode(orgCode)
+                                .orgTranslation("Test Organization")
+                                .build();
+
+                when(ucsbOrganizationsRepository.findById(orgCode)).thenReturn(Optional.of(org));
+
+                // Act
+                MvcResult response = mockMvc.perform(get("/api/ucsborganizations")
+                                .param("orgCode", orgCode))
+                                .andExpect(status().isOk())
+                                .andReturn();
+
+                // Assert
+                verify(ucsbOrganizationsRepository, times(1)).findById(orgCode);
+                String expectedJson = mapper.writeValueAsString(org);
+                String responseString = response.getResponse().getContentAsString();
+                assertEquals(expectedJson, responseString);
+        }
+
+        @WithMockUser(roles = { "USER" })
+        @Test
+        public void logged_in_user_gets_404_when_organization_does_not_exist() throws Exception {
+                // Arrange
+                String orgCode = "NON_EXISTENT_ORG";
+
+                when(ucsbOrganizationsRepository.findById(orgCode)).thenReturn(Optional.empty());
+
+                // Act
+                MvcResult response = mockMvc.perform(get("/api/ucsborganizations")
+                                .param("orgCode", orgCode))
+                                .andExpect(status().isNotFound()) // Expect 404
+                                .andReturn();
+
+                // Assert
+                verify(ucsbOrganizationsRepository, times(1)).findById(orgCode);
+                Map<String, Object> jsonResponse = responseToJson(response);
+                assertEquals("UCSBOrganizations with id NON_EXISTENT_ORG not found", jsonResponse.get("message"));
         }
 }
