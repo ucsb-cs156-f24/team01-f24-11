@@ -23,12 +23,13 @@
                 "columns": [
                   {
                     "column": {
+                      "autoIncrement": true,
                       "constraints": {
                         "primaryKey": true,
                         "primaryKeyName": "UCSBDININGCOMMONSMENUITEMS_PK"
                       },
                       "name": "ID",
-                      "type": "VARCHAR(255)"
+                      "type": "LONG"
                     }
                   },
                   {
