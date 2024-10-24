@@ -2,6 +2,7 @@ package edu.ucsb.cs156.example.controllers;
 
 import edu.ucsb.cs156.example.repositories.UserRepository;
 import edu.ucsb.cs156.example.testconfig.TestConfig;
+import lombok.With;
 import edu.ucsb.cs156.example.ControllerTestCase;
 import edu.ucsb.cs156.example.entities.UCSBDate;
 import edu.ucsb.cs156.example.entities.UCSBDiningCommonsMenuItem;
@@ -75,7 +76,7 @@ public class UCSBDiningCommonsMenuItemControllerTests extends ControllerTestCase
                                 .with(csrf())).andExpect(status().is(200)).andReturn();
 
                 verify (ucsbDiningCommonsMenuItemRepository, times(1)).save(any());  
-                String expectedJson = "{\"diningCommonsCode\":\"foo\",\"name\":\"ber\",\"station\":\"basdf\"}";
+                String expectedJson = "{\"id\":0,\"diningCommonsCode\":\"foo\",\"name\":\"ber\",\"station\":\"basdf\"}";
                 String responseString = response.getResponse().getContentAsString();
                 assertEquals(expectedJson, responseString);
 
@@ -111,8 +112,34 @@ public class UCSBDiningCommonsMenuItemControllerTests extends ControllerTestCase
                                 .andExpect(status().isOk()).andReturn();
 
                 String getContent = getResponse.getResponse().getContentAsString();
-                assertEquals(getContent, "[{\"diningCommonsCode\":\"foo\",\"name\":\"bar\",\"station\":\"baz\"}]");
+                assertEquals(getContent, "[{\"id\":0,\"diningCommonsCode\":\"foo\",\"name\":\"bar\",\"station\":\"baz\"}]");
         }
 
+        @WithMockUser(roles = { "ADMIN", "USER" })
+        @Test
+        public void testGetIdHappyPath() throws Exception {
+                UCSBDiningCommonsMenuItem mockItem = new UCSBDiningCommonsMenuItem();
+                mockItem.setId(63L);
+                mockItem.setDiningCommonsCode("foo");
+                mockItem.setName("bar");
+                mockItem.setStation("baz");
+                when(ucsbDiningCommonsMenuItemRepository.findById(63L)).thenReturn(Optional.of(mockItem));
+                MvcResult response = mockMvc.perform(get("/api/ucsbdiningcommonsmenuitems?id=63"))
+                                .andExpect(status().isOk()).andReturn();
+
+                String expected = "{\"id\":63,\"diningCommonsCode\":\"foo\",\"name\":\"bar\",\"station\":\"baz\"}";
+                String responseString = response.getResponse().getContentAsString();
+                assertEquals(expected, responseString);
+        }
+
+
+        @WithMockUser(roles = { "ADMIN", "USER" })
+        @Test
+        public void testGetIdNotFound() throws Exception {
+                when(ucsbDiningCommonsMenuItemRepository.findById(63L)).thenReturn(Optional.empty());
+                mockMvc.perform(get("/api/ucsbdiningcommonsmenuitems?id=63"))
+                                .andExpect(status().isNotFound()).andReturn();
+
+        }
 
 }
