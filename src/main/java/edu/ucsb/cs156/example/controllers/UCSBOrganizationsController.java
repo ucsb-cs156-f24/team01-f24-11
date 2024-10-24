@@ -47,7 +47,7 @@ public class UCSBOrganizationsController extends ApiController {
     /**
      * Get a single org by id
      *
-     * @param org the id of the date
+     * @param orgCode the id of the date
      * @return a UCSBOrg
      */
     @Operation(summary = "Get a single org from the table")
