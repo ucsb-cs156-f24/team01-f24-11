@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Entity(name = "helprequests")
+//Help Requests Entity
 public class HelpRequests {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
