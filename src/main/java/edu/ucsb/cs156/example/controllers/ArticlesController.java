@@ -71,4 +71,64 @@ public class ArticlesController extends ApiController{
 
         return savedArticle;
     }
+
+    /**
+     * Delete an Article
+     * 
+     * @param id the id of the article to delete
+     * @return a message indicating the article was deleted
+     */
+    @Operation(summary= "Delete an Article")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("")
+    public Object deleteArticle(
+            @Parameter(name="id") @RequestParam String id) {
+        Article article = articleRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Article.class, id));
+
+        articleRepository.delete(article);
+        return genericMessage("Article with id %s deleted".formatted(id));
+    }
+
+    /**
+     * Get a single article by id
+     * 
+     * @param id the id of the article
+     * @return an article
+     */
+    @Operation(summary= "Get a single article")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("")
+    public Article getById(
+            @Parameter(name="id") @RequestParam String id) {
+        Article article = articleRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Article.class, id));
+
+        return article;
+    }
+
+    /**
+     * Update a single article
+     * 
+     * @param id       id of the article to update
+     * @param incoming the new article
+     * @return the updated article object
+     */
+    @Operation(summary= "Update a single article")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("")
+    public Article updateArticle(
+            @Parameter(name="id") @RequestParam String id,
+            @RequestBody @Valid Article incoming) {
+
+        Article article = articleRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Article.class, id));
+
+        article.setTitle(incoming.getTitle());
+        article.setUrl(incoming.getUrl());
+        article.setExplanation(incoming.getExplanation());
+        article.setEmail(incoming.getEmail());
+        article.setDateAdded(incoming.getDateAdded());
+
+        articleRepository.save(article);
+
+        return article;
+    }
 }
