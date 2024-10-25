@@ -261,7 +261,7 @@ public class UCSBDiningCommonsControllerTests extends ControllerTestCase {
                 UCSBDiningCommons carrilloOrig = UCSBDiningCommons.builder()
                                 .name("Carrillo")
                                 .code("carrillo")
-                                .hasSackMeal(false)
+             .hasSackMeal(false)
                                 .hasTakeOutMeal(false)
                                 .hasDiningCam(true)
                                 .latitude(34.409953)
