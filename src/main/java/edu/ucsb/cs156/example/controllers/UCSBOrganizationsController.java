@@ -58,6 +58,33 @@ public class UCSBOrganizationsController extends ApiController {
                 .orElseThrow(() -> new EntityNotFoundException(UCSBOrganizations.class, orgCode));
     }
 
+    /**
+     * Update a single org. Accessible only to users with the role "ROLE_ADMIN".
+     * 
+     * @param orgCode  code of the org
+     * @param incoming the new org contents
+     * @return the updated org object
+     */
+    @Operation(summary = "Update a single organization")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("")
+    public UCSBOrganizations updateOrganizations(
+            @Parameter(name = "orgCode") @RequestParam String orgCode,
+            @RequestBody @Valid UCSBOrganizations incoming) {
+
+        UCSBOrganizations organization = ucsbOrganizationsRepository.findById(orgCode)
+                .orElseThrow(() -> new EntityNotFoundException(UCSBOrganizations.class, orgCode));
+
+        // organization.setOrgCode(incoming.getOrgCode());
+        organization.setOrgTranslationShort(incoming.getOrgTranslationShort());
+        organization.setOrgTranslation(incoming.getOrgTranslation());
+        organization.setInactive(incoming.getInactive());
+
+        ucsbOrganizationsRepository.save(organization);
+
+        return organization;
+    }
+
     @Operation(summary = "Create a new organization")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/post")
