@@ -11,7 +11,7 @@
               "not": [
                 {
                   "tableExists": {
-                    "tableName": "UCSBDiningCommonsMenuItem"
+                    "tableName": "UCSBDININGCOMMONSMENUITEM"
                   }
                 }
               ]
@@ -29,7 +29,7 @@
                         "primaryKeyName": "UCSBDININGCOMMONSMENUITEMS_PK"
                       },
                       "name": "ID",
-                      "type": "LONG"
+                      "type": "BIGINT"
                     }
                   },
                   {
