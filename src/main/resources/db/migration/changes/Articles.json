@@ -23,12 +23,13 @@
                 "columns": [
                   {
                     "column": {
+                      "autoIncrement": true,
                       "constraints": {
                         "primaryKey": true,
                         "primaryKeyName": "ARTICLE-PK"
                       },
                       "name": "ID",
-                      "type": "INT"
+                      "type": "BIGINT"
                     }
                   },
                   {
@@ -66,7 +67,7 @@
                   },
                   {
                     "column": {
-                      "name": "DATEADDED",
+                      "name": "DATE_ADDED",
                       "type": "TIMESTAMP"
                     }
                   }]
