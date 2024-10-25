@@ -74,6 +74,32 @@ import java.time.LocalDateTime;
     }
 
     /**
+     * Update a single UCSBDiningCommonsMenuItem via diningCommonsCode
+     * 
+     * @param id the id of the UCSBDiningCommonsMenuItem
+     * @param ucsbDiningCommonsMenuItem the new UCSBDiningCommonsMenuItem
+     * @return a single UCSBDiningCommonsMenuItem
+     */
+    @Operation(summary= &quot;Update a single ucsb dining commons menu item&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @PutMapping(&quot;&quot;)
+    public UCSBDiningCommonsMenuItem updateUCSBDiningCommonsMenuItem(
+            @Parameter(name=&quot;id&quot;) @RequestParam Long id,
+            @Valid @RequestBody UCSBDiningCommonsMenuItem ucsbDiningCommonsMenuItem) {
+
+<span class="fc" id="L90">        UCSBDiningCommonsMenuItem ucsbDiningCommonsMenuItemToUpdate = ucsbDiningCommonsMenuItemRepository</span>
+<span class="fc" id="L91">                .findById(id)</span>
+<span class="fc" id="L92">                .orElseThrow(() -&gt; new EntityNotFoundException(UCSBDiningCommonsMenuItem.class, id));</span>
+
+<span class="fc" id="L94">        ucsbDiningCommonsMenuItemToUpdate.setDiningCommonsCode(ucsbDiningCommonsMenuItem.getDiningCommonsCode());</span>
+<span class="fc" id="L95">        ucsbDiningCommonsMenuItemToUpdate.setName(ucsbDiningCommonsMenuItem.getName());</span>
+<span class="fc" id="L96">        ucsbDiningCommonsMenuItemToUpdate.setStation(ucsbDiningCommonsMenuItem.getStation());</span>
+<span class="fc" id="L97">        ucsbDiningCommonsMenuItemRepository.save(ucsbDiningCommonsMenuItemToUpdate);</span>
+<span class="fc" id="L98">        return ucsbDiningCommonsMenuItemToUpdate;</span>
+    }
+
+
+    /**
      * Create a new UCSBDiningCommonsMenuItem
      * 
      * @param diningCommonsCode code of the UCSBDiningCommons
@@ -89,14 +115,14 @@ import java.time.LocalDateTime;
             @Parameter(name=&quot;name&quot;) @RequestParam String name,
             @Parameter(name=&quot;station&quot;) @RequestParam String station
     ) throws JsonProcessingException{
-<span class="fc" id="L92">        UCSBDiningCommonsMenuItem newUcsbDiningCommonsMenuItem = new UCSBDiningCommonsMenuItem();</span>
-<span class="fc" id="L93">        newUcsbDiningCommonsMenuItem.setDiningCommonsCode(diningCommonsCode);</span>
-<span class="fc" id="L94">        newUcsbDiningCommonsMenuItem.setName(name);</span>
-<span class="fc" id="L95">        newUcsbDiningCommonsMenuItem.setStation(station);</span>
+<span class="fc" id="L118">        UCSBDiningCommonsMenuItem newUcsbDiningCommonsMenuItem = new UCSBDiningCommonsMenuItem();</span>
+<span class="fc" id="L119">        newUcsbDiningCommonsMenuItem.setDiningCommonsCode(diningCommonsCode);</span>
+<span class="fc" id="L120">        newUcsbDiningCommonsMenuItem.setName(name);</span>
+<span class="fc" id="L121">        newUcsbDiningCommonsMenuItem.setStation(station);</span>
 
-<span class="fc" id="L97">        UCSBDiningCommonsMenuItem savedItems = ucsbDiningCommonsMenuItemRepository.save(newUcsbDiningCommonsMenuItem);</span>
+<span class="fc" id="L123">        UCSBDiningCommonsMenuItem savedItems = ucsbDiningCommonsMenuItemRepository.save(newUcsbDiningCommonsMenuItem);</span>
 
-<span class="fc" id="L99">        return savedItems;</span>
+<span class="fc" id="L125">        return savedItems;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
