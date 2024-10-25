@@ -104,5 +104,17 @@ import jakarta.validation.Valid;
 
 <span class="fc" id="L105">        return savedOrganizations;</span>
     }
+
+    @Operation(summary = &quot;Delete a UCSBDOrganizations&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @DeleteMapping(&quot;&quot;)
+    public Object deleteOrganizations(
+            @Parameter(name = &quot;orgCode&quot;) @RequestParam String orgCode) {
+<span class="fc" id="L113">        UCSBOrganizations organizations = ucsbOrganizationsRepository.findById(orgCode)</span>
+<span class="fc" id="L114">                .orElseThrow(() -&gt; new EntityNotFoundException(UCSBOrganizations.class, orgCode));</span>
+
+<span class="fc" id="L116">        ucsbOrganizationsRepository.delete(organizations);</span>
+<span class="fc" id="L117">        return genericMessage(&quot;UCSBOrganizations with id %s deleted&quot;.formatted(orgCode));</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
