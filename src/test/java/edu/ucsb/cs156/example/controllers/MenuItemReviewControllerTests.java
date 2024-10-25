@@ -90,7 +90,7 @@ public class MenuItemReviewControllerTests extends ControllerTestCase{
 
 
 
-    @WithMockUser(roles = { "USER" })
+        @WithMockUser(roles = { "USER" })
         @Test
         public void logged_in_user_can_get_all_menu_item_reviews() throws Exception {
 
@@ -131,6 +131,52 @@ public class MenuItemReviewControllerTests extends ControllerTestCase{
                 String responseString = response.getResponse().getContentAsString();
                 assertEquals(expectedJson, responseString);
         }
+
+
+
+
+
+        @WithMockUser(roles = { "USER" })
+        @Test
+        public void logged_in_user_can_get_single_menu_item_review_by_id() throws Exception {
+
+            MenuItemReviews review = MenuItemReviews.builder()
+                    .id(10L)
+                    .itemId(3L)
+                    .reviewEmail("johnlins@ucsb.edu")
+                    .stars(4)
+                    .dateReviewed(LocalDateTime.parse("2022-01-03T00:00:00"))
+                    .comments("very good")
+                    .build();
+
+            when(menuItemReviewsRepository.findById(10L)).thenReturn(Optional.of(review));
+
+            MvcResult response = mockMvc.perform(get("/api/menuitemreview?id=10"))
+                            .andExpect(status().isOk())
+                            .andReturn();
+
+            verify(menuItemReviewsRepository, times(1)).findById(10L);
+
+            assertEquals(mapper.writeValueAsString(review), response.getResponse().getContentAsString());
+        }
+
+
+
+
+        @WithMockUser(roles = { "USER" })
+        @Test
+        public void logged_in_user_cannot_get_nonexistent_menu_item_review_by_id() throws Exception {
+
+            when(menuItemReviewsRepository.findById(99L)).thenReturn(Optional.empty());
+
+            mockMvc.perform(get("/api/menuitemreview?id=99"))
+                    .andExpect(status().isNotFound());
+        }
+
+
+
+
+
 
 
 
