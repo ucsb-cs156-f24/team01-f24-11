@@ -71,5 +71,65 @@ import java.time.LocalDateTime;
 
 <span class="fc" id="L72">        return savedArticle;</span>
     }
+
+    /**
+     * Delete an Article
+     * 
+     * @param id the id of the article to delete
+     * @return a message indicating the article was deleted
+     */
+    @Operation(summary= &quot;Delete an Article&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @DeleteMapping(&quot;&quot;)
+    public Object deleteArticle(
+            @Parameter(name=&quot;id&quot;) @RequestParam String id) {
+<span class="fc" id="L86">        Article article = articleRepository.findById(id).orElseThrow(() -&gt; new EntityNotFoundException(Article.class, id));</span>
+
+<span class="fc" id="L88">        articleRepository.delete(article);</span>
+<span class="fc" id="L89">        return genericMessage(&quot;Article with id %s deleted&quot;.formatted(id));</span>
+    }
+
+    /**
+     * Get a single article by id
+     * 
+     * @param id the id of the article
+     * @return an article
+     */
+    @Operation(summary= &quot;Get a single article&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
+    @GetMapping(&quot;&quot;)
+    public Article getById(
+            @Parameter(name=&quot;id&quot;) @RequestParam String id) {
+<span class="fc" id="L103">        Article article = articleRepository.findById(id).orElseThrow(() -&gt; new EntityNotFoundException(Article.class, id));</span>
+
+<span class="fc" id="L105">        return article;</span>
+    }
+
+    /**
+     * Update a single article
+     * 
+     * @param id       id of the article to update
+     * @param incoming the new article
+     * @return the updated article object
+     */
+    @Operation(summary= &quot;Update a single article&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @PutMapping(&quot;&quot;)
+    public Article updateArticle(
+            @Parameter(name=&quot;id&quot;) @RequestParam String id,
+            @RequestBody @Valid Article incoming) {
+
+<span class="fc" id="L122">        Article article = articleRepository.findById(id).orElseThrow(() -&gt; new EntityNotFoundException(Article.class, id));</span>
+
+<span class="fc" id="L124">        article.setTitle(incoming.getTitle());</span>
+<span class="fc" id="L125">        article.setUrl(incoming.getUrl());</span>
+<span class="fc" id="L126">        article.setExplanation(incoming.getExplanation());</span>
+<span class="fc" id="L127">        article.setEmail(incoming.getEmail());</span>
+<span class="fc" id="L128">        article.setDateAdded(incoming.getDateAdded());</span>
+
+<span class="fc" id="L130">        articleRepository.save(article);</span>
+
+<span class="fc" id="L132">        return article;</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
