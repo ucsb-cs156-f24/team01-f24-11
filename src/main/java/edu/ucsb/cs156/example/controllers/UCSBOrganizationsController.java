@@ -104,4 +104,16 @@ public class UCSBOrganizationsController extends ApiController {
 
         return savedOrganizations;
     }
+
+    @Operation(summary = "Delete a UCSBDOrganizations")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("")
+    public Object deleteOrganizations(
+            @Parameter(name = "orgCode") @RequestParam String orgCode) {
+        UCSBOrganizations organizations = ucsbOrganizationsRepository.findById(orgCode)
+                .orElseThrow(() -> new EntityNotFoundException(UCSBOrganizations.class, orgCode));
+
+        ucsbOrganizationsRepository.delete(organizations);
+        return genericMessage("UCSBOrganizations with id %s deleted".formatted(orgCode));
+    }
 }
