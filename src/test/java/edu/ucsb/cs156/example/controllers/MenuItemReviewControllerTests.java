@@ -179,6 +179,144 @@ public class MenuItemReviewControllerTests extends ControllerTestCase{
 
 
 
+        @WithMockUser(roles = { "ADMIN", "USER" })
+        @Test
+        public void admin_cannot_edit_menu_item_review_that_does_not_exist() throws Exception {
+
+            LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
+
+            MenuItemReviews editedReview = MenuItemReviews.builder()
+                    .id(10)
+                    .itemId(3)
+                    .reviewEmail("edited@gmail.com")
+                    .stars(5)
+                    .dateReviewed(ldt1)
+                    .comments("even better")
+                    .build();
+
+            String requestBody = mapper.writeValueAsString(editedReview);
+
+            when(menuItemReviewsRepository.findById(eq(10L))).thenReturn(Optional.empty());
+
+
+            MvcResult response = mockMvc.perform(
+                    put("/api/menuitemreview?id=10")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .characterEncoding("utf-8")
+                            .content(requestBody)
+                            .with(csrf()))
+                    .andExpect(status().isNotFound())
+                    .andReturn();
+
+
+            verify(menuItemReviewsRepository, times(1)).findById(10L);
+            Map<String, Object> json = responseToJson(response);
+            assertEquals("MenuItemReviews with id 10 not found", json.get("message"));
+        }
+
+
+
+
+        @WithMockUser(roles = { "ADMIN", "USER" })
+        @Test
+        public void admin_can_edit_an_existing_menu_item_review() throws Exception {
+
+            LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
+            LocalDateTime ldt2 = LocalDateTime.parse("2023-01-03T00:00:00");
+
+            MenuItemReviews originalReview = MenuItemReviews.builder()
+                    .id(10)
+                    .itemId(3)
+                    .reviewEmail("orig@gmail.com")
+                    .stars(4)
+                    .dateReviewed(ldt1)
+                    .comments("very good")
+                    .build();
+
+            MenuItemReviews editedReview = MenuItemReviews.builder()
+                    .id(10)
+                    .itemId(4)
+                    .reviewEmail("edited@gmail.com")
+                    .stars(5)
+                    .dateReviewed(ldt2)
+                    .comments("even better")
+                    .build();
+
+            String requestBody = mapper.writeValueAsString(editedReview);
+
+            when(menuItemReviewsRepository.findById(eq(10L))).thenReturn(Optional.of(originalReview));
+            when(menuItemReviewsRepository.save(originalReview)).thenReturn(originalReview);
+
+            MvcResult response = mockMvc.perform(
+                    put("/api/menuitemreview?id=10")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .characterEncoding("utf-8")
+                            .content(requestBody)
+                            .with(csrf()))
+                    .andExpect(status().isOk())
+                    .andReturn();
+
+
+            verify(menuItemReviewsRepository, times(1)).findById(10L);
+            verify(menuItemReviewsRepository, times(1)).save(editedReview);
+            String responseString = response.getResponse().getContentAsString();
+            assertEquals(requestBody, responseString);
+        }
+
+
+
+
+
+
+        @WithMockUser(roles = { "ADMIN" })
+        @Test
+        public void admin_can_delete_existing_menu_item_review() throws Exception {
+
+            MenuItemReviews review = MenuItemReviews.builder()
+                    .id(10)
+                    .itemId(3)
+                    .reviewEmail("test@ucsb.edu")
+                    .stars(5)
+                    .dateReviewed(LocalDateTime.parse("2022-01-03T00:00:00"))
+                    .comments("Great item!")
+                    .build();
+
+            when(menuItemReviewsRepository.findById(eq(10L))).thenReturn(Optional.of(review));
+
+
+            MvcResult response = mockMvc.perform(
+                    delete("/api/menuitemreview?id=10")
+                            .with(csrf()))
+                    .andExpect(status().isOk())
+                    .andReturn();
+
+
+            verify(menuItemReviewsRepository, times(1)).findById(10L);
+            verify(menuItemReviewsRepository, times(1)).delete(review);
+            String responseString = response.getResponse().getContentAsString();
+            assertEquals("MenuItemReview with id 10 deleted", responseString);
+        }
+
+        @WithMockUser(roles = { "ADMIN" })
+        @Test
+        public void admin_cannot_delete_nonexistent_menu_item_review() throws Exception {
+
+            when(menuItemReviewsRepository.findById(eq(67L))).thenReturn(Optional.empty());
+
+
+            MvcResult response = mockMvc.perform(
+                    delete("/api/menuitemreview?id=67")
+                            .with(csrf()))
+                    .andExpect(status().isNotFound())
+                    .andReturn();
+
+
+            verify(menuItemReviewsRepository, times(1)).findById(67L);
+            Map<String, Object> json = responseToJson(response);
+            assertEquals("MenuItemReviews with id 67 not found", json.get("message"));
+        }
+
+
 
 
 

@@ -96,4 +96,55 @@ public class MenuItemReviewController extends ApiController {
     }
 
 
+
+
+
+
+
+
+    @Operation(summary = "Update a menu item review by id")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("")
+    public MenuItemReviews updateMenuItemReview(
+            @Parameter(name = "id") @RequestParam long id,
+            @RequestBody @Valid MenuItemReviews updatedReview) {
+
+        MenuItemReviews existingReview = menuItemReviewsRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(MenuItemReviews.class, id));
+
+
+        existingReview.setItemId(updatedReview.getItemId());
+        existingReview.setReviewEmail(updatedReview.getReviewEmail());
+        existingReview.setStars(updatedReview.getStars());
+        existingReview.setDateReviewed(updatedReview.getDateReviewed());
+        existingReview.setComments(updatedReview.getComments());
+
+
+        menuItemReviewsRepository.save(existingReview);
+
+        return existingReview;
+    }
+
+
+
+
+
+@DeleteMapping("")
+@PreAuthorize("hasRole('ROLE_ADMIN')")
+@Operation(summary = "Delete a menu item review by id")
+public String deleteMenuItemReview(@RequestParam long id) throws EntityNotFoundException {
+    MenuItemReviews menuItemReview = menuItemReviewsRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(MenuItemReviews.class, id));
+
+    menuItemReviewsRepository.delete(menuItemReview);
+
+    return "MenuItemReview with id " + id + " deleted";
+}
+
+
+
+
+
+
+
 }
