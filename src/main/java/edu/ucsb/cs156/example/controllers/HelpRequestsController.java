@@ -56,7 +56,7 @@ public class HelpRequestsController extends ApiController {
     /**
      * Get a single date by id
      * 
-     * @param id the id of the date
+     * @param id the id of HelpRequests
      * @return a HelpRequests
      */
     @Operation(summary= "Get a single date")
