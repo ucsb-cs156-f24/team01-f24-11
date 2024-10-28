@@ -1,8 +1,8 @@
 package edu.ucsb.cs156.example.controllers;
 
-import edu.ucsb.cs156.example.entities.HelpRequests;
+import edu.ucsb.cs156.example.entities.HelpRequest;
 import edu.ucsb.cs156.example.errors.EntityNotFoundException;
-import edu.ucsb.cs156.example.repositories.HelpRequestsRepository;
+import edu.ucsb.cs156.example.repositories.HelpRequestRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -28,44 +28,44 @@ import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 
 /**
- * This is a REST controller for HelpRequestss
+ * This is a REST controller for HelpRequests
  */
 
-@Tag(name = "HelpRequests")
-@RequestMapping("/api/helprequests")
+@Tag(name = "HelpRequest")
+@RequestMapping("/api/helprequest")
 @RestController
 @Slf4j
-public class HelpRequestsController extends ApiController {
+public class HelpRequestController extends ApiController {
 
     @Autowired
-    HelpRequestsRepository helpRequestsRepository;
+    HelpRequestRepository helpRequestRepository;
 
     /**
      * List all help requests
      * 
-     * @return an iterable of HelpRequests
+     * @return an iterable of HelpRequest
      */
     @Operation(summary= "List all help requests")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/all")
-    public Iterable<HelpRequests> allHelpRequestss() {
-        Iterable<HelpRequests> dates = helpRequestsRepository.findAll();
+    public Iterable<HelpRequest> allHelpRequests() {
+        Iterable<HelpRequest> dates = helpRequestRepository.findAll();
         return dates;
     }
 
     /**
      * Get a single date by id
      * 
-     * @param id the id of HelpRequests
-     * @return a HelpRequests
+     * @param id the id of HelpRequest
+     * @return a HelpRequest
      */
     @Operation(summary= "Get a single date")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("")
-    public HelpRequests getById(
+    public HelpRequest getById(
             @Parameter(name="id") @RequestParam Long id) {
-        HelpRequests HelpRequest = helpRequestsRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(HelpRequests.class, id));
+        HelpRequest HelpRequest = helpRequestRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(HelpRequest.class, id));
 
         return HelpRequest;
     }
@@ -78,12 +78,12 @@ public class HelpRequestsController extends ApiController {
      * @param requestTime
      * @param explanation
      * @param solved
-     * @return the saved HelpRequests
+     * @return the saved HelpRequest
      */
     @Operation(summary= "Create a new date")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/post")
-    public HelpRequests postHelpRequests(
+    public HelpRequest postHelpRequest(
             @Parameter(name="requesterEmail") @RequestParam String requesterEmail,
             @Parameter(name="teamId") @RequestParam String teamId,
             @Parameter(name="tableOrBreakoutRoom") @RequestParam String tableOrBreakoutRoom,
@@ -98,7 +98,7 @@ public class HelpRequestsController extends ApiController {
 
         log.info("requestTime={}", requestTime);
 
-        HelpRequests HelpRequest = new HelpRequests();
+        HelpRequest HelpRequest = new HelpRequest();
         HelpRequest.setRequesterEmail(requesterEmail);
         HelpRequest.setTeamId(teamId);
         HelpRequest.setTableOrBreakoutRoom(tableOrBreakoutRoom);
@@ -106,27 +106,27 @@ public class HelpRequestsController extends ApiController {
         HelpRequest.setExplanation(explanation);
         HelpRequest.setSolved(solved);
 
-        HelpRequests savedHelpRequests = helpRequestsRepository.save(HelpRequest);
+        HelpRequest savedHelpRequest = helpRequestRepository.save(HelpRequest);
 
-        return savedHelpRequests;
+        return savedHelpRequest;
     }
 
     /**
-     * Delete a HelpRequests
+     * Delete a HelpRequest
      * 
-     * @param id the id of the HelpRequests to delete
-     * @return a message indicating the HelpRequests was deleted
+     * @param id the id of the HelpRequest to delete
+     * @return a message indicating the HelpRequest was deleted
      */
-    @Operation(summary= "Delete a HelpRequests")
+    @Operation(summary= "Delete a HelpRequest")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("")
-    public Object deleteHelpRequests(
+    public Object deleteHelpRequest(
             @Parameter(name="id") @RequestParam Long id) {
-        HelpRequests HelpRequest = helpRequestsRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(HelpRequests.class, id));
+        HelpRequest HelpRequest = helpRequestRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(HelpRequest.class, id));
 
-        helpRequestsRepository.delete(HelpRequest);
-        return genericMessage("HelpRequests with id %s deleted".formatted(id));
+        helpRequestRepository.delete(HelpRequest);
+        return genericMessage("HelpRequest with id %s deleted".formatted(id));
     }
 
     /**
@@ -139,12 +139,12 @@ public class HelpRequestsController extends ApiController {
     @Operation(summary= "Update a single date")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("")
-    public HelpRequests updateHelpRequests(
+    public HelpRequest updateHelpRequest(
             @Parameter(name="id") @RequestParam Long id,
-            @RequestBody @Valid HelpRequests incoming) {
+            @RequestBody @Valid HelpRequest incoming) {
 
-        HelpRequests HelpRequest = helpRequestsRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(HelpRequests.class, id));
+        HelpRequest HelpRequest = helpRequestRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(HelpRequest.class, id));
         HelpRequest.setRequesterEmail(incoming.getRequesterEmail());
         HelpRequest.setTeamId(incoming.getTeamId());
         HelpRequest.setTableOrBreakoutRoom(incoming.getTableOrBreakoutRoom());
@@ -153,7 +153,7 @@ public class HelpRequestsController extends ApiController {
         HelpRequest.setSolved(incoming.getSolved());
     
 
-        helpRequestsRepository.save(HelpRequest);
+        helpRequestRepository.save(HelpRequest);
 
         return HelpRequest;
     }

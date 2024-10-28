@@ -14,9 +14,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity(name = "helprequests")
+@Entity(name = "helprequest")
 //Help Requests Entity
-public class HelpRequests {
+public class HelpRequest {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
