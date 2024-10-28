@@ -96,5 +96,56 @@ import java.time.LocalDateTime;
     }
 
 
+
+
+
+
+
+
+    @Operation(summary = &quot;Update a menu item review by id&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @PutMapping(&quot;&quot;)
+    public MenuItemReviews updateMenuItemReview(
+            @Parameter(name = &quot;id&quot;) @RequestParam long id,
+            @RequestBody @Valid MenuItemReviews updatedReview) {
+
+<span class="fc" id="L112">        MenuItemReviews existingReview = menuItemReviewsRepository.findById(id)</span>
+<span class="fc" id="L113">                .orElseThrow(() -&gt; new EntityNotFoundException(MenuItemReviews.class, id));</span>
+
+
+<span class="fc" id="L116">        existingReview.setItemId(updatedReview.getItemId());</span>
+<span class="fc" id="L117">        existingReview.setReviewEmail(updatedReview.getReviewEmail());</span>
+<span class="fc" id="L118">        existingReview.setStars(updatedReview.getStars());</span>
+<span class="fc" id="L119">        existingReview.setDateReviewed(updatedReview.getDateReviewed());</span>
+<span class="fc" id="L120">        existingReview.setComments(updatedReview.getComments());</span>
+
+
+<span class="fc" id="L123">        menuItemReviewsRepository.save(existingReview);</span>
+
+<span class="fc" id="L125">        return existingReview;</span>
+    }
+
+
+
+
+
+@DeleteMapping(&quot;&quot;)
+@PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+@Operation(summary = &quot;Delete a menu item review by id&quot;)
+public String deleteMenuItemReview(@RequestParam long id) throws EntityNotFoundException {
+<span class="fc" id="L136">    MenuItemReviews menuItemReview = menuItemReviewsRepository.findById(id)</span>
+<span class="fc" id="L137">            .orElseThrow(() -&gt; new EntityNotFoundException(MenuItemReviews.class, id));</span>
+
+<span class="fc" id="L139">    menuItemReviewsRepository.delete(menuItemReview);</span>
+
+<span class="fc" id="L141">    return &quot;MenuItemReview with id &quot; + id + &quot; deleted&quot;;</span>
+}
+
+
+
+
+
+
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
