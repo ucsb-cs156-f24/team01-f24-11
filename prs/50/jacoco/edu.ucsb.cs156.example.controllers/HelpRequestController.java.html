@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HelpRequestsController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">team01</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.example.controllers</a> &gt; <span class="el_source">HelpRequestsController.java</span></div><h1>HelpRequestsController.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.example.controllers;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HelpRequestController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">team01</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.example.controllers</a> &gt; <span class="el_source">HelpRequestController.java</span></div><h1>HelpRequestController.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.example.controllers;
 
-import edu.ucsb.cs156.example.entities.HelpRequests;
+import edu.ucsb.cs156.example.entities.HelpRequest;
 import edu.ucsb.cs156.example.errors.EntityNotFoundException;
-import edu.ucsb.cs156.example.repositories.HelpRequestsRepository;
+import edu.ucsb.cs156.example.repositories.HelpRequestRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -28,44 +28,44 @@ import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 
 /**
- * This is a REST controller for HelpRequestss
+ * This is a REST controller for HelpRequests
  */
 
-@Tag(name = &quot;HelpRequests&quot;)
-@RequestMapping(&quot;/api/helprequests&quot;)
+@Tag(name = &quot;HelpRequest&quot;)
+@RequestMapping(&quot;/api/helprequest&quot;)
 @RestController
 <span class="fc" id="L37">@Slf4j</span>
-<span class="fc" id="L38">public class HelpRequestsController extends ApiController {</span>
+<span class="fc" id="L38">public class HelpRequestController extends ApiController {</span>
 
     @Autowired
-    HelpRequestsRepository helpRequestsRepository;
+    HelpRequestRepository helpRequestRepository;
 
     /**
      * List all help requests
      * 
-     * @return an iterable of HelpRequests
+     * @return an iterable of HelpRequest
      */
     @Operation(summary= &quot;List all help requests&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
     @GetMapping(&quot;/all&quot;)
-    public Iterable&lt;HelpRequests&gt; allHelpRequestss() {
-<span class="fc" id="L52">        Iterable&lt;HelpRequests&gt; dates = helpRequestsRepository.findAll();</span>
+    public Iterable&lt;HelpRequest&gt; allHelpRequests() {
+<span class="fc" id="L52">        Iterable&lt;HelpRequest&gt; dates = helpRequestRepository.findAll();</span>
 <span class="fc" id="L53">        return dates;</span>
     }
 
     /**
      * Get a single date by id
      * 
-     * @param id the id of HelpRequests
-     * @return a HelpRequests
+     * @param id the id of HelpRequest
+     * @return a HelpRequest
      */
     @Operation(summary= &quot;Get a single date&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
     @GetMapping(&quot;&quot;)
-    public HelpRequests getById(
+    public HelpRequest getById(
             @Parameter(name=&quot;id&quot;) @RequestParam Long id) {
-<span class="fc" id="L67">        HelpRequests HelpRequest = helpRequestsRepository.findById(id)</span>
-<span class="fc" id="L68">                .orElseThrow(() -&gt; new EntityNotFoundException(HelpRequests.class, id));</span>
+<span class="fc" id="L67">        HelpRequest HelpRequest = helpRequestRepository.findById(id)</span>
+<span class="fc" id="L68">                .orElseThrow(() -&gt; new EntityNotFoundException(HelpRequest.class, id));</span>
 
 <span class="fc" id="L70">        return HelpRequest;</span>
     }
@@ -78,12 +78,12 @@ import java.time.LocalDateTime;
      * @param requestTime
      * @param explanation
      * @param solved
-     * @return the saved HelpRequests
+     * @return the saved HelpRequest
      */
     @Operation(summary= &quot;Create a new date&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PostMapping(&quot;/post&quot;)
-    public HelpRequests postHelpRequests(
+    public HelpRequest postHelpRequest(
             @Parameter(name=&quot;requesterEmail&quot;) @RequestParam String requesterEmail,
             @Parameter(name=&quot;teamId&quot;) @RequestParam String teamId,
             @Parameter(name=&quot;tableOrBreakoutRoom&quot;) @RequestParam String tableOrBreakoutRoom,
@@ -98,7 +98,7 @@ import java.time.LocalDateTime;
 
 <span class="fc" id="L99">        log.info(&quot;requestTime={}&quot;, requestTime);</span>
 
-<span class="fc" id="L101">        HelpRequests HelpRequest = new HelpRequests();</span>
+<span class="fc" id="L101">        HelpRequest HelpRequest = new HelpRequest();</span>
 <span class="fc" id="L102">        HelpRequest.setRequesterEmail(requesterEmail);</span>
 <span class="fc" id="L103">        HelpRequest.setTeamId(teamId);</span>
 <span class="fc" id="L104">        HelpRequest.setTableOrBreakoutRoom(tableOrBreakoutRoom);</span>
@@ -106,27 +106,27 @@ import java.time.LocalDateTime;
 <span class="fc" id="L106">        HelpRequest.setExplanation(explanation);</span>
 <span class="fc" id="L107">        HelpRequest.setSolved(solved);</span>
 
-<span class="fc" id="L109">        HelpRequests savedHelpRequests = helpRequestsRepository.save(HelpRequest);</span>
+<span class="fc" id="L109">        HelpRequest savedHelpRequest = helpRequestRepository.save(HelpRequest);</span>
 
-<span class="fc" id="L111">        return savedHelpRequests;</span>
+<span class="fc" id="L111">        return savedHelpRequest;</span>
     }
 
     /**
-     * Delete a HelpRequests
+     * Delete a HelpRequest
      * 
-     * @param id the id of the HelpRequests to delete
-     * @return a message indicating the HelpRequests was deleted
+     * @param id the id of the HelpRequest to delete
+     * @return a message indicating the HelpRequest was deleted
      */
-    @Operation(summary= &quot;Delete a HelpRequests&quot;)
+    @Operation(summary= &quot;Delete a HelpRequest&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @DeleteMapping(&quot;&quot;)
-    public Object deleteHelpRequests(
+    public Object deleteHelpRequest(
             @Parameter(name=&quot;id&quot;) @RequestParam Long id) {
-<span class="fc" id="L125">        HelpRequests HelpRequest = helpRequestsRepository.findById(id)</span>
-<span class="fc" id="L126">                .orElseThrow(() -&gt; new EntityNotFoundException(HelpRequests.class, id));</span>
+<span class="fc" id="L125">        HelpRequest HelpRequest = helpRequestRepository.findById(id)</span>
+<span class="fc" id="L126">                .orElseThrow(() -&gt; new EntityNotFoundException(HelpRequest.class, id));</span>
 
-<span class="fc" id="L128">        helpRequestsRepository.delete(HelpRequest);</span>
-<span class="fc" id="L129">        return genericMessage(&quot;HelpRequests with id %s deleted&quot;.formatted(id));</span>
+<span class="fc" id="L128">        helpRequestRepository.delete(HelpRequest);</span>
+<span class="fc" id="L129">        return genericMessage(&quot;HelpRequest with id %s deleted&quot;.formatted(id));</span>
     }
 
     /**
@@ -139,12 +139,12 @@ import java.time.LocalDateTime;
     @Operation(summary= &quot;Update a single date&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PutMapping(&quot;&quot;)
-    public HelpRequests updateHelpRequests(
+    public HelpRequest updateHelpRequest(
             @Parameter(name=&quot;id&quot;) @RequestParam Long id,
-            @RequestBody @Valid HelpRequests incoming) {
+            @RequestBody @Valid HelpRequest incoming) {
 
-<span class="fc" id="L146">        HelpRequests HelpRequest = helpRequestsRepository.findById(id)</span>
-<span class="fc" id="L147">                .orElseThrow(() -&gt; new EntityNotFoundException(HelpRequests.class, id));</span>
+<span class="fc" id="L146">        HelpRequest HelpRequest = helpRequestRepository.findById(id)</span>
+<span class="fc" id="L147">                .orElseThrow(() -&gt; new EntityNotFoundException(HelpRequest.class, id));</span>
 <span class="fc" id="L148">        HelpRequest.setRequesterEmail(incoming.getRequesterEmail());</span>
 <span class="fc" id="L149">        HelpRequest.setTeamId(incoming.getTeamId());</span>
 <span class="fc" id="L150">        HelpRequest.setTableOrBreakoutRoom(incoming.getTableOrBreakoutRoom());</span>
@@ -153,7 +153,7 @@ import java.time.LocalDateTime;
 <span class="fc" id="L153">        HelpRequest.setSolved(incoming.getSolved());</span>
     
 
-<span class="fc" id="L156">        helpRequestsRepository.save(HelpRequest);</span>
+<span class="fc" id="L156">        helpRequestRepository.save(HelpRequest);</span>
 
 <span class="fc" id="L158">        return HelpRequest;</span>
     }
