@@ -98,15 +98,16 @@ public class HelpRequestController extends ApiController {
 
         log.info("requestTime={}", requestTime);
 
-        HelpRequest HelpRequest = new HelpRequest();
-        HelpRequest.setRequesterEmail(requesterEmail);
-        HelpRequest.setTeamId(teamId);
-        HelpRequest.setTableOrBreakoutRoom(tableOrBreakoutRoom);
-        HelpRequest.setRequestTime(requestTime);
-        HelpRequest.setExplanation(explanation);
-        HelpRequest.setSolved(solved);
+        HelpRequest helpRequest = HelpRequest.builder()
+            .requesterEmail(requesterEmail)
+            .teamId(teamId)
+            .tableOrBreakoutRoom(tableOrBreakoutRoom)
+            .requestTime(requestTime)
+            .explanation(explanation)
+            .solved(solved)
+            .build();
 
-        HelpRequest savedHelpRequest = helpRequestRepository.save(HelpRequest);
+        HelpRequest savedHelpRequest = helpRequestRepository.save(helpRequest);
 
         return savedHelpRequest;
     }
