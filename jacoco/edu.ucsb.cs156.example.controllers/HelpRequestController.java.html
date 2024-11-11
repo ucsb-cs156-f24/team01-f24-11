@@ -98,17 +98,18 @@ import java.time.LocalDateTime;
 
 <span class="fc" id="L99">        log.info(&quot;requestTime={}&quot;, requestTime);</span>
 
-<span class="fc" id="L101">        HelpRequest HelpRequest = new HelpRequest();</span>
-<span class="fc" id="L102">        HelpRequest.setRequesterEmail(requesterEmail);</span>
-<span class="fc" id="L103">        HelpRequest.setTeamId(teamId);</span>
-<span class="fc" id="L104">        HelpRequest.setTableOrBreakoutRoom(tableOrBreakoutRoom);</span>
-<span class="fc" id="L105">        HelpRequest.setRequestTime(requestTime);</span>
-<span class="fc" id="L106">        HelpRequest.setExplanation(explanation);</span>
-<span class="fc" id="L107">        HelpRequest.setSolved(solved);</span>
+<span class="fc" id="L101">        HelpRequest helpRequest = HelpRequest.builder()</span>
+<span class="fc" id="L102">            .requesterEmail(requesterEmail)</span>
+<span class="fc" id="L103">            .teamId(teamId)</span>
+<span class="fc" id="L104">            .tableOrBreakoutRoom(tableOrBreakoutRoom)</span>
+<span class="fc" id="L105">            .requestTime(requestTime)</span>
+<span class="fc" id="L106">            .explanation(explanation)</span>
+<span class="fc" id="L107">            .solved(solved)</span>
+<span class="fc" id="L108">            .build();</span>
 
-<span class="fc" id="L109">        HelpRequest savedHelpRequest = helpRequestRepository.save(HelpRequest);</span>
+<span class="fc" id="L110">        HelpRequest savedHelpRequest = helpRequestRepository.save(helpRequest);</span>
 
-<span class="fc" id="L111">        return savedHelpRequest;</span>
+<span class="fc" id="L112">        return savedHelpRequest;</span>
     }
 
     /**
@@ -122,11 +123,11 @@ import java.time.LocalDateTime;
     @DeleteMapping(&quot;&quot;)
     public Object deleteHelpRequest(
             @Parameter(name=&quot;id&quot;) @RequestParam Long id) {
-<span class="fc" id="L125">        HelpRequest HelpRequest = helpRequestRepository.findById(id)</span>
-<span class="fc" id="L126">                .orElseThrow(() -&gt; new EntityNotFoundException(HelpRequest.class, id));</span>
+<span class="fc" id="L126">        HelpRequest HelpRequest = helpRequestRepository.findById(id)</span>
+<span class="fc" id="L127">                .orElseThrow(() -&gt; new EntityNotFoundException(HelpRequest.class, id));</span>
 
-<span class="fc" id="L128">        helpRequestRepository.delete(HelpRequest);</span>
-<span class="fc" id="L129">        return genericMessage(&quot;HelpRequest with id %s deleted&quot;.formatted(id));</span>
+<span class="fc" id="L129">        helpRequestRepository.delete(HelpRequest);</span>
+<span class="fc" id="L130">        return genericMessage(&quot;HelpRequest with id %s deleted&quot;.formatted(id));</span>
     }
 
     /**
@@ -143,19 +144,19 @@ import java.time.LocalDateTime;
             @Parameter(name=&quot;id&quot;) @RequestParam Long id,
             @RequestBody @Valid HelpRequest incoming) {
 
-<span class="fc" id="L146">        HelpRequest HelpRequest = helpRequestRepository.findById(id)</span>
-<span class="fc" id="L147">                .orElseThrow(() -&gt; new EntityNotFoundException(HelpRequest.class, id));</span>
-<span class="fc" id="L148">        HelpRequest.setRequesterEmail(incoming.getRequesterEmail());</span>
-<span class="fc" id="L149">        HelpRequest.setTeamId(incoming.getTeamId());</span>
-<span class="fc" id="L150">        HelpRequest.setTableOrBreakoutRoom(incoming.getTableOrBreakoutRoom());</span>
-<span class="fc" id="L151">        HelpRequest.setRequestTime(incoming.getRequestTime());</span>
-<span class="fc" id="L152">        HelpRequest.setExplanation(incoming.getExplanation());</span>
-<span class="fc" id="L153">        HelpRequest.setSolved(incoming.getSolved());</span>
+<span class="fc" id="L147">        HelpRequest HelpRequest = helpRequestRepository.findById(id)</span>
+<span class="fc" id="L148">                .orElseThrow(() -&gt; new EntityNotFoundException(HelpRequest.class, id));</span>
+<span class="fc" id="L149">        HelpRequest.setRequesterEmail(incoming.getRequesterEmail());</span>
+<span class="fc" id="L150">        HelpRequest.setTeamId(incoming.getTeamId());</span>
+<span class="fc" id="L151">        HelpRequest.setTableOrBreakoutRoom(incoming.getTableOrBreakoutRoom());</span>
+<span class="fc" id="L152">        HelpRequest.setRequestTime(incoming.getRequestTime());</span>
+<span class="fc" id="L153">        HelpRequest.setExplanation(incoming.getExplanation());</span>
+<span class="fc" id="L154">        HelpRequest.setSolved(incoming.getSolved());</span>
     
 
-<span class="fc" id="L156">        helpRequestRepository.save(HelpRequest);</span>
+<span class="fc" id="L157">        helpRequestRepository.save(HelpRequest);</span>
 
-<span class="fc" id="L158">        return HelpRequest;</span>
+<span class="fc" id="L159">        return HelpRequest;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
